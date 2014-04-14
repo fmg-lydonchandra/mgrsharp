@@ -1,10 +1,12 @@
 # MGRSharp
 
-This is a C# port of the Java library provided at https://github.com/Berico-Technologies/Geo-Coordinate-Conversion-Java
+This is a quick&dirty C# port of the Java library provided at https://github.com/Berico-Technologies/Geo-Coordinate-Conversion-Java
 
 Functionality for Converting between different Geospatial Coordinate Systems (Lat/Lon, UTM, UPS, and MGRS) from the NASA World Wind project (which they translated from the GDAL library written in C).
 
 This code is protected under the NASA Open Source Agreement (v1.3) [see below].
+
+Known bug: Antarctic region conversions to MGRS yields in incorrect results [ref. last test case of Exmaple.cs].
 
 ============================================================
 
