@@ -15,7 +15,6 @@
  * @author Jussi Lahdenniemi
  */
 
-using System;
 
 namespace Worldwind
 {
