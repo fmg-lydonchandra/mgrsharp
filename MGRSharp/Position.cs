@@ -12,80 +12,74 @@
 
 using System;
 
-namespace Worldwind
-{
-    /**
+namespace MGRSharp;
+
+/**
      * @author tag
      * @version $Id$
      */
-    public class Position: LatLon
+public class Position : LatLon
+{
+    public new static readonly Position ZERO = new(Angle.ZERO, Angle.ZERO, 0d);
+
+    public double elevation;
+
+    public static Position FromRadians(double latitude, double longitude, double elevation)
     {
-        new public static readonly Position ZERO = new Position(Angle.ZERO, Angle.ZERO, 0d);
+        return new Position(Angle.FromRadians(latitude), Angle.FromRadians(longitude), elevation);
+    }
 
-        public double elevation;
+    public static Position FromDegrees(double latitude, double longitude, double elevation)
+    {
+        return new Position(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), elevation);
+    }
 
-        public static Position FromRadians(double latitude, double longitude, double elevation)
-        {
-            return new Position(Angle.FromRadians(latitude), Angle.FromRadians(longitude), elevation);
-        }
+    public new static Position FromDegrees(double latitude, double longitude)
+    {
+        return new Position(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+    }
 
-        public static Position FromDegrees(double latitude, double longitude, double elevation)
-        {
-            return new Position(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), elevation);
-        }
+    public Position(Angle latitude, Angle longitude, double elevation) : base(latitude, longitude)
+    {
+        this.elevation = elevation;
+    }
 
-        new public static Position FromDegrees(double latitude, double longitude)
-        {
-            return new Position(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
-        }
+    public Position(LatLon latLon, double elevation) : base(latLon)
+    {
+        this.elevation = elevation;
+    }
 
-        public Position(Angle latitude, Angle longitude, double elevation): base(latitude, longitude)
-        {
-            this.elevation = elevation;
-        }
-
-        public Position(LatLon latLon, double elevation): base(latLon)
-        {
-            this.elevation = elevation;
-        }
-
-        /**
+    /**
          * Obtains the elevation of this position
          *
          * @return this position's elevation
          */
-        public double Elevation
-        {
-            get { return this.elevation; }
-        }
+    public double Elevation => elevation;
 
-        /**
+    /**
          * Obtains the elevation of this position
          *
          * @return this position's elevation
          */
-        public double Altitude
-        {
-            get { return this.elevation; }
-        }
+    public double Altitude => elevation;
 
-        new public Position Add(Position that)
-        {
-            Angle lat = Angle.NormalizeLatitude(this.latitude.Add(that.latitude));
-            Angle lon = Angle.NormalizeLongitude(this.longitude.Add(that.longitude));
+    public new Position Add(Position that)
+    {
+        var lat = Angle.NormalizeLatitude(latitude.Add(that.latitude));
+        var lon = Angle.NormalizeLongitude(longitude.Add(that.longitude));
 
-            return new Position(lat, lon, this.elevation + that.elevation);
-        }
+        return new Position(lat, lon, elevation + that.elevation);
+    }
 
-        new public Position Subtract(Position that)
-        {
-            Angle lat = Angle.NormalizeLatitude(this.latitude.Subtract(that.latitude));
-            Angle lon = Angle.NormalizeLongitude(this.longitude.Subtract(that.longitude));
+    public new Position Subtract(Position that)
+    {
+        var lat = Angle.NormalizeLatitude(latitude.Subtract(that.latitude));
+        var lon = Angle.NormalizeLongitude(longitude.Subtract(that.longitude));
 
-            return new Position(lat, lon, this.elevation - that.elevation);
-        }
+        return new Position(lat, lon, elevation - that.elevation);
+    }
 
-        /**
+    /**
          * Returns the linear interpolation of <code>value1</code> and <code>value2</code>, treating the geographic
          * locations as simple 2D coordinate pairs, and treating the elevation values as 1D scalars.
          *
@@ -97,30 +91,30 @@ namespace Worldwind
          *
          * @throws IllegalArgumentException if either position is null.
          */
-        public static Position interpolate(double amount, Position value1, Position value2)
+    public static Position interpolate(double amount, Position value1, Position value2)
+    {
+        throw new NotImplementedException();
+        /*
+        if (value1 == null || value2 == null)
         {
-            throw new NotImplementedException();
-            /*
-            if (value1 == null || value2 == null)
-            {
-                throw new IllegalArgumentException("Position Is Null");
-            }
-
-            if (amount < 0)
-                return value1;
-            else if (amount > 1)
-                return value2;
-
-            LatLon latLon = LatLon.interpolate(amount, value1, value2);
-            // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
-            // interpolate elevation linearly.
-            double elevation = WWMath.Mix(amount, value1.Elevation, value2.Elevation);
-
-            return new Position(latLon, elevation);
-            */
+            throw new IllegalArgumentException("Position Is Null");
         }
 
-        /**
+        if (amount < 0)
+            return value1;
+        else if (amount > 1)
+            return value2;
+
+        LatLon latLon = LatLon.interpolate(amount, value1, value2);
+        // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
+        // interpolate elevation linearly.
+        double elevation = WWMath.Mix(amount, value1.Elevation, value2.Elevation);
+
+        return new Position(latLon, elevation);
+        */
+    }
+
+    /**
          * Returns the an interpolated location along the great-arc between <code>value1</code> and <code>value2</code>. The
          * position's elevation components are linearly interpolated as a simple 1D scalar value. The interpolation factor
          * <code>amount</code> defines the weight given to each value, and is clamped to the range [0, 1]. If <code>a</code>
@@ -138,25 +132,25 @@ namespace Worldwind
          *
          * @throws IllegalArgumentException if either location is null.
          */
-        public static Position interpolateGreatCircle(double amount, Position value1, Position value2)
+    public static Position interpolateGreatCircle(double amount, Position value1, Position value2)
+    {
+        throw new NotImplementedException();
+        /*
+        if (value1 == null || value2 == null)
         {
-            throw new NotImplementedException();
-            /*
-            if (value1 == null || value2 == null)
-            {
-                throw new IllegalArgumentException("Position Is Null");
-            }
-
-            LatLon latLon = LatLon.interpolateGreatCircle(amount, value1, value2);
-            // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
-            // interpolate elevation linearly.
-            double elevation = WWMath.mix(amount, value1.getElevation(), value2.getElevation());
-
-            return new Position(latLon, elevation);
-            */
+            throw new IllegalArgumentException("Position Is Null");
         }
 
-        /**
+        LatLon latLon = LatLon.interpolateGreatCircle(amount, value1, value2);
+        // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
+        // interpolate elevation linearly.
+        double elevation = WWMath.mix(amount, value1.getElevation(), value2.getElevation());
+
+        return new Position(latLon, elevation);
+        */
+    }
+
+    /**
          * Returns the an interpolated location along the rhumb line between <code>value1</code> and <code>value2</code>.
          * The position's elevation components are linearly interpolated as a simple 1D scalar value. The interpolation
          * factor <code>amount</code> defines the weight given to each value, and is clamped to the range [0, 1]. If
@@ -174,54 +168,54 @@ namespace Worldwind
          *
          * @throws IllegalArgumentException if either location is null.
          */
-        public static Position interpolateRhumb(double amount, Position value1, Position value2)
-        {
-            throw new NotImplementedException();
-            /*
-            if (value1 == null || value2 == null)
-            {
-                throw new IllegalArgumentException("Position Is Null");
-            }
-
-            LatLon latLon = LatLon.interpolateRhumb(amount, value1, value2);
-            // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
-            // interpolate elevation linearly.
-            double elevation = WWMath.mix(amount, value1.getElevation(), value2.getElevation());
-
-            return new Position(latLon, elevation);
-            */
-        }
-
+    public static Position interpolateRhumb(double amount, Position value1, Position value2)
+    {
+        throw new NotImplementedException();
         /*
-        public static boolean positionsCrossDateLine(Iterable<? extends Position> positions)
+        if (value1 == null || value2 == null)
         {
-            if (positions == null)
-            {
-                throw new IllegalArgumentException("Positions List Is Null");
-            }
-
-            Position pos = null;
-            for (Position posNext : positions)
-            {
-                if (pos != null)
-                {
-                    // A segment cross the line if end pos have different longitude signs
-                    // and are more than 180 degress longitude apart
-                    if (Math.signum(pos.getLongitude().degrees) != Math.signum(posNext.getLongitude().degrees))
-                    {
-                        double delta = Math.abs(pos.getLongitude().degrees - posNext.getLongitude().degrees);
-                        if (delta > 180 && delta < 360)
-                            return true;
-                    }
-                }
-                pos = posNext;
-            }
-
-            return false;
+            throw new IllegalArgumentException("Position Is Null");
         }
-        */
 
-        /**
+        LatLon latLon = LatLon.interpolateRhumb(amount, value1, value2);
+        // Elevation is independent of geographic interpolation method (i.e. rhumb, great-circle, linear), so we
+        // interpolate elevation linearly.
+        double elevation = WWMath.mix(amount, value1.getElevation(), value2.getElevation());
+
+        return new Position(latLon, elevation);
+        */
+    }
+
+    /*
+    public static boolean positionsCrossDateLine(Iterable<? extends Position> positions)
+    {
+        if (positions == null)
+        {
+            throw new IllegalArgumentException("Positions List Is Null");
+        }
+
+        Position pos = null;
+        for (Position posNext : positions)
+        {
+            if (pos != null)
+            {
+                // A segment cross the line if end pos have different longitude signs
+                // and are more than 180 degress longitude apart
+                if (Math.signum(pos.getLongitude().degrees) != Math.signum(posNext.getLongitude().degrees))
+                {
+                    double delta = Math.abs(pos.getLongitude().degrees - posNext.getLongitude().degrees);
+                    if (delta > 180 && delta < 360)
+                        return true;
+                }
+            }
+            pos = posNext;
+        }
+
+        return false;
+    }
+    */
+
+    /**
          * Computes a new set of positions translated from a specified reference position to a new reference position.
          *
          * @param oldPosition the original reference position.
@@ -232,68 +226,66 @@ namespace Worldwind
          *
          * @throws IllegalArgumentException if any argument is null.
          */
-        /*
-        public static List<Position> computeShiftedPositions(Position oldPosition, Position newPosition,
-                                                             Iterable<? extends Position> positions)
+    /*
+    public static List<Position> computeShiftedPositions(Position oldPosition, Position newPosition,
+                                                         Iterable<? extends Position> positions)
+    {
+        // TODO: Account for dateline spanning
+        if (oldPosition == null || newPosition == null)
         {
-            // TODO: Account for dateline spanning
-            if (oldPosition == null || newPosition == null)
-            {
-                throw new IllegalArgumentException("Position Is Null");
-            }
-
-            if (positions == null)
-            {
-                throw new IllegalArgumentException("Positions List Is Null");
-            }
-
-            ArrayList<Position> newPositions = new ArrayList<Position>();
-
-            double elevDelta = newPosition.getElevation() - oldPosition.getElevation();
-
-            for (Position pos : positions)
-            {
-                Angle distance = LatLon.greatCircleDistance(oldPosition, pos);
-                Angle azimuth = LatLon.greatCircleAzimuth(oldPosition, pos);
-                LatLon newLocation = LatLon.greatCircleEndPosition(newPosition, azimuth, distance);
-                double newElev = pos.getElevation() + elevDelta;
-
-                newPositions.add(new Position(newLocation, newElev));
-            }
-
-            return newPositions;
+            throw new IllegalArgumentException("Position Is Null");
         }
-        */
 
-        override public bool Equals(object o)
+        if (positions == null)
         {
-            if (this == o)
-                return true;
+            throw new IllegalArgumentException("Positions List Is Null");
+        }
 
-            Position position = o as Position;
-            if (o == null)
-                return false;
+        ArrayList<Position> newPositions = new ArrayList<Position>();
 
-            if(!base.Equals(position))
-                return false;
-            if(position.elevation != elevation)
-                return false;
+        double elevDelta = newPosition.getElevation() - oldPosition.getElevation();
 
+        for (Position pos : positions)
+        {
+            Angle distance = LatLon.greatCircleDistance(oldPosition, pos);
+            Angle azimuth = LatLon.greatCircleAzimuth(oldPosition, pos);
+            LatLon newLocation = LatLon.greatCircleEndPosition(newPosition, azimuth, distance);
+            double newElev = pos.getElevation() + elevDelta;
+
+            newPositions.add(new Position(newLocation, newElev));
+        }
+
+        return newPositions;
+    }
+    */
+    public override bool Equals(object o)
+    {
+        if (this == o)
             return true;
-        }
 
-        override public int GetHashCode()
-        {
-            int result = base.GetHashCode();
-            long temp;
-            temp = elevation != 0.0 ? BitConverter.DoubleToInt64Bits(elevation) : 0L;
-            result = 31 * result + (int) (temp ^ (temp >> 32));
-            return result;
-        }
+        var position = o as Position;
+        if (o == null)
+            return false;
 
-        override public string ToString()
-        {
-            return string.Format( "({0}, {1}, {2})", this.latitude.ToString(), this.longitude.ToString(), this.elevation );
-        }
+        if (!base.Equals(position))
+            return false;
+        if (position.elevation != elevation)
+            return false;
+
+        return true;
+    }
+
+    public override int GetHashCode()
+    {
+        var result = base.GetHashCode();
+        long temp;
+        temp = elevation != 0.0 ? BitConverter.DoubleToInt64Bits(elevation) : 0L;
+        result = 31 * result + (int)(temp ^ (temp >> 32));
+        return result;
+    }
+
+    public override string ToString()
+    {
+        return string.Format("({0}, {1}, {2})", latitude.ToString(), longitude.ToString(), elevation);
     }
 }

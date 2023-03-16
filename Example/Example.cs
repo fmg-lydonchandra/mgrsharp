@@ -5,10 +5,9 @@
  * @author Jussi Lahdenniemi
  */
 
-using System;
-using Worldwind;
+using MGRSharp;
 
-namespace Test;
+namespace Example;
 
 public static class Test
 {
@@ -22,6 +21,7 @@ public static class Test
         { 0.0, 0.0 },
         { 89.5, 12.3 },
         { -84.195396, 160.872803 },
+        { -31.92157, 116.010921 }, //hazelmere
         { -31.995770, 116.123526 }, // perth
         { -22.3894, 119.70442 }, // flinders
         { -22.51937, 117.02329 } // eliwana 

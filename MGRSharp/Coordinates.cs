@@ -1,24 +1,21 @@
-using System;
+namespace MGRSharp;
 
-namespace Worldwind
+public static class Coordinates
 {
-    public static class Coordinates
+    public static string MGRSFromLatLon(double lat, double lon)
     {
-        public static string MGRSFromLatLon( double lat, double lon )
-        {
-            Angle latitude = Angle.FromDegrees(lat);
-            Angle longitude = Angle.FromDegrees(lon);
-            return MGRSCoord.FromLatLon(latitude, longitude).ToString();
-        }
+        var latitude = Angle.FromDegrees(lat);
+        var longitude = Angle.FromDegrees(lon);
+        return MGRSCoord.FromLatLon(latitude, longitude).ToString();
+    }
 
-        public static double[] LatLonFromMGRS( string mgrs )
+    public static double[] LatLonFromMGRS(string mgrs)
+    {
+        var coord = MGRSCoord.FromString(mgrs);
+        return new double[]
         {
-            MGRSCoord coord = MGRSCoord.FromString(mgrs);
-            return new double[]
-            { 
-                coord.Latitude.degrees,
-                coord.Longitude.degrees 
-            };
-        }
+            coord.Latitude.degrees,
+            coord.Longitude.degrees
+        };
     }
 }

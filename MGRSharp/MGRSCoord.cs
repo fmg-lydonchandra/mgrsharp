@@ -20,15 +20,15 @@
 
 using System;
 
-namespace Worldwind
-{
-    public class MGRSCoord
-    {
-        private string MGRSString;
-        private Angle latitude;
-        private Angle longitude;
+namespace MGRSharp;
 
-        /**
+public class MGRSCoord
+{
+    private string MGRSString;
+    private Angle latitude;
+    private Angle longitude;
+
+    /**
          * Create a WGS84 MGRS coordinate from a pair of latitude and longitude <code>Angle</code>
          * with the maximum precision of five digits (one meter).
          *
@@ -38,12 +38,12 @@ namespace Worldwind
          * @throws IllegalArgumentException if <code>latitude</code> or <code>longitude</code> is null,
          * or the conversion to MGRS coordinates fails.
          */
-        public static MGRSCoord FromLatLon(Angle latitude, Angle longitude)
-        {
-            return FromLatLon(latitude, longitude, 5);
-        }
+    public static MGRSCoord FromLatLon(Angle latitude, Angle longitude)
+    {
+        return FromLatLon(latitude, longitude, 5);
+    }
 
-        /**
+    /**
          * Create a MGRS coordinate from a pair of latitude and longitude <code>Angle</code>
          * with the given precision or number of digits (1 to 5).
          *
@@ -55,25 +55,19 @@ namespace Worldwind
          * @throws IllegalArgumentException if <code>latitude</code> or <code>longitude</code> is null,
          * or the conversion to MGRS coordinates fails.
          */
-        public static MGRSCoord FromLatLon(Angle latitude, Angle longitude, int precision)
-        {
-            if (latitude == null || longitude == null)
-            {
-                throw new ArgumentException("Latitude Or Longitude Is Null");
-            }
+    public static MGRSCoord FromLatLon(Angle latitude, Angle longitude, int precision)
+    {
+        if (latitude == null || longitude == null) throw new ArgumentException("Latitude Or Longitude Is Null");
 
-            MGRSCoordConverter converter = new MGRSCoordConverter();
-            long err = converter.convertGeodeticToMGRS(latitude.radians, longitude.radians, precision);
+        var converter = new MGRSCoordConverter();
+        var err = converter.convertGeodeticToMGRS(latitude.radians, longitude.radians, precision);
 
-            if (err != MGRSCoordConverter.MGRS_NO_ERROR)
-            {
-                throw new ArgumentException("MGRS Conversion Error");
-            }
+        if (err != MGRSCoordConverter.MGRS_NO_ERROR) throw new ArgumentException("MGRS Conversion Error");
 
-            return new MGRSCoord(latitude, longitude, converter.MGRSString);
-        }
+        return new MGRSCoord(latitude, longitude, converter.MGRSString);
+    }
 
-        /**
+    /**
          * Create a MGRS coordinate from a standard MGRS coordinate text string.
          * <p>
          * The string will be converted to uppercase and stripped of all spaces before being evaluated.
@@ -89,29 +83,23 @@ namespace Worldwind
          * @throws ArgumentException if the <code>MGRSString</code> is null or empty,
          * the <code>globe</code> is null, or the conversion to geodetic coordinates fails (invalid coordinate string).
          */
-        public static MGRSCoord FromString(string MGRSString)
-        {
-            if (MGRSString == null || MGRSString.Length == 0)
-            {
-                throw new ArgumentException("String Is Null");
-            }
+    public static MGRSCoord FromString(string MGRSString)
+    {
+        if (MGRSString == null || MGRSString.Length == 0) throw new ArgumentException("String Is Null");
 
-            MGRSString = MGRSString.ToUpper().Replace(" ", "");
+        MGRSString = MGRSString.ToUpper().Replace(" ", "");
 
-            MGRSCoordConverter converter = new MGRSCoordConverter();
-            long err = converter.ConvertMGRSToGeodetic(MGRSString);
+        var converter = new MGRSCoordConverter();
+        var err = converter.ConvertMGRSToGeodetic(MGRSString);
 
-            if (err != MGRSCoordConverter.MGRS_NO_ERROR)
-            {
-                throw new ArgumentException("MGRS Conversion Error");
-            }
+        if (err != MGRSCoordConverter.MGRS_NO_ERROR) throw new ArgumentException("MGRS Conversion Error");
 
-            return new MGRSCoord(Angle.FromRadians(converter.Latitude),
-                                 Angle.FromRadians(converter.Longitude),
-                                 MGRSString);
-        }
+        return new MGRSCoord(Angle.FromRadians(converter.Latitude),
+            Angle.FromRadians(converter.Longitude),
+            MGRSString);
+    }
 
-        /**
+    /**
          * Create an arbitrary MGRS coordinate from a pair of latitude-longitude <code>Angle</code>
          * and the corresponding MGRS coordinate string.
          *
@@ -121,38 +109,22 @@ namespace Worldwind
          * @throws ArgumentException if <code>latitude</code> or <code>longitude</code> is null,
          * or the MGRSString is null or empty.
          */
-        public MGRSCoord(Angle latitude, Angle longitude, String MGRSString)
-        {
-            if (latitude == null || longitude == null)
-            {
-                throw new ArgumentException("Latitude Or Longitude Is Null");
-            }
-            if (MGRSString == null)
-            {
-                throw new ArgumentException("String Is Null");
-            }
-            if (MGRSString.Length == 0)
-            {
-                throw new ArgumentException("String Is Empty");
-            }
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.MGRSString = MGRSString;
-        }
+    public MGRSCoord(Angle latitude, Angle longitude, string MGRSString)
+    {
+        if (latitude == null || longitude == null) throw new ArgumentException("Latitude Or Longitude Is Null");
+        if (MGRSString == null) throw new ArgumentException("String Is Null");
+        if (MGRSString.Length == 0) throw new ArgumentException("String Is Empty");
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.MGRSString = MGRSString;
+    }
 
-        public Angle Latitude
-        {
-            get { return this.latitude; }
-        }
+    public Angle Latitude => latitude;
 
-        public Angle Longitude
-        {
-            get { return this.longitude; }
-        }
+    public Angle Longitude => longitude;
 
-        override public string ToString()
-        {
-            return this.MGRSString;
-        }
+    public override string ToString()
+    {
+        return MGRSString;
     }
 }
